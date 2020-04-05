@@ -19,7 +19,7 @@ namespace dbo = Wt::Dbo;
 class Database {
 public:
   Database();
-  void Init();
+  void Init(const char*);
 
   dbo::ptr<Unit> GetUnit();
 

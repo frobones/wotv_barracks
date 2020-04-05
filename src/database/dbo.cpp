@@ -7,9 +7,15 @@
 //!
 
 #include <string>
+#include <cstdio>
+
+#include <rapidjson/document.h>
+#include <rapidjson/filereadstream.h>
 
 #include "dbo.hpp"
 #include "unit.hpp"
+
+using namespace rapidjson;
 
 Database::Database() {
   std::unique_ptr<dbo::backend::Sqlite3> sqlite3(new dbo::backend::Sqlite3(":memory:"));
@@ -19,20 +25,32 @@ Database::Database() {
   session.createTables();
 }
 
-void Database::Init() {
+void Database::Init(const char *json_info) {
   {
     dbo::Transaction transaction(session);
 
     std::unique_ptr<Unit> unit{new Unit()};
-    unit->name_ = "Mont Leonis";
-    unit->faction_ = Faction::LEONIS;
-    unit->is_limited_ = false;
-    unit->rarity_ = Rarity::MR;
-    unit->element_ = Element::EARTH;
-    unit->job_1_ = Job::LORD;
-    unit->job_2_ = Job::PALADIN;
-    unit->job_3_ = Job::KNIGHT;
-    unit->image_uri = "http://wotvffbe.gamea.co/file/imgbank/fm874m0k/426irsj7/e120d9b9def38020a4fdbcd1628e887d963b1da7_s.jpg";
+
+    FILE* fp = fopen(json_info, "rb");
+    char readBuffer[65536];
+    FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+    Document d;
+    d.ParseStream(is);
+
+    auto units = d["units"].GetArray();
+
+    for (auto const& unit_info : units) {
+      unit->name_ = unit_info["name"].GetString();
+      unit->faction_ = toEnum<Faction>(unit_info["faction"].GetString());
+      unit->is_limited_ = unit_info["is_limited"].GetBool();
+      unit->rarity_ = toEnum<Rarity>(unit_info["rarity"].GetString());
+      unit->element_ = toEnum<Element>(unit_info["element"].GetString());
+      unit->job_1_ = toEnum<Job>(unit_info["jobs"][0].GetString());
+      unit->job_2_ = toEnum<Job>(unit_info["jobs"][1].GetString());
+      unit->job_3_ = toEnum<Job>(unit_info["jobs"][2].GetString());
+      unit->image_uri = unit_info["image_uri"].GetString();
+    }
 
     dbo::ptr<Unit> unit_ptr = session.add(std::move(unit));
   }

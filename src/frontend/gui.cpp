@@ -23,7 +23,7 @@
 */
 BarracksApplication::BarracksApplication(const WEnvironment& env) : WApplication(env) {
   Database db;
-  db.Init();
+  db.Init("/home/frobones/CLionProjects/wotv_barracks/json/units.json");
 
   dbo::ptr<Unit> unit = db.GetUnit();
 
