@@ -8,11 +8,11 @@
 
 #include "unit.hpp"
 
-const char *Unit::GetName() {
+const char *Unit::GetName() const {
   return name_.c_str();
 }
 
-const char *Unit::GetFaction() {
+const char *Unit::GetFaction() const {
   switch (faction_) {
     case Faction::ALIARE:
       return "Aliare";
@@ -41,7 +41,7 @@ const char *Unit::GetFaction() {
   }
 }
 
-const char *Unit::GetRarity() {
+const char *Unit::GetRarity() const {
   switch (rarity_) {
     case Rarity::N:
       return "N";
@@ -58,7 +58,7 @@ const char *Unit::GetRarity() {
   }
 }
 
-const char *Unit::GetElement() {
+const char *Unit::GetElement() const {
   switch (element_) {
     case Element::FIRE:
       return "Fire";
@@ -81,7 +81,7 @@ const char *Unit::GetElement() {
   }
 }
 
-const char *Unit::GetJob(Job job) {
+const char *Unit::GetJob(Job job) const {
   switch (job) {
     case Job::BLACK_MAGE:
       return "Black Mage";
@@ -138,18 +138,18 @@ const char *Unit::GetJob(Job job) {
   }
 }
 
-const char *Unit::GetJob1() {
+const char *Unit::GetJob1() const {
   return GetJob(job_1_);
 }
 
-const char *Unit::GetJob2() {
+const char *Unit::GetJob2() const {
   return GetJob(job_2_);
 }
 
-const char *Unit::GetJob3() {
+const char *Unit::GetJob3() const {
   return GetJob(job_3_);
 }
 
-const char *Unit::GetImageUri() {
+const char *Unit::GetImageUri() const {
   return image_uri.c_str();
 }

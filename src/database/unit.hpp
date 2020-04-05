@@ -28,14 +28,14 @@ class Unit {
   Job job_2_;
   Job job_3_;
 
-  const char *GetName();
-  const char *GetFaction();
-  const char *GetRarity();
-  const char *GetElement();
-  const char *GetJob1();
-  const char *GetJob2();
-  const char *GetJob3();
-  const char *GetImageUri();
+  const char *GetName() const;
+  const char *GetFaction() const;
+  const char *GetRarity() const;
+  const char *GetElement() const;
+  const char *GetJob1() const;
+  const char *GetJob2() const;
+  const char *GetJob3() const;
+  const char *GetImageUri() const;
 
   std::string image_uri;
 
@@ -53,7 +53,7 @@ class Unit {
   }
 
  private:
-  const char *GetJob(Job job);
+  const char *GetJob(Job job) const;
 };
 
 

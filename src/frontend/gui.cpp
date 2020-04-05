@@ -29,5 +29,6 @@ BarracksApplication::BarracksApplication(const WEnvironment& env) : WApplication
 
   useStyleSheet(WLink("https://www.w3schools.com/w3css/4/w3.css"));
 
-  root()->addWidget(helper::get_unit_frame(*unit.get()));
+  if (unit)
+    root()->addWidget(helper::get_unit_frame(unit.get()));
 }
