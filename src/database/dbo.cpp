@@ -7,11 +7,7 @@
 //!
 
 #include <string>
-#include <cstdio>
 #include <syslog.h>
-
-#include <rapidjson/document.h>
-#include <rapidjson/filereadstream.h>
 
 #include "dbo.hpp"
 #include "unit.hpp"
@@ -33,26 +29,13 @@ Database::~Database() {
   closelog();
 }
 
-int Database::Init(const char *json_info) {
+void Database::Init(Document &json_object) {
   {
     dbo::Transaction transaction(session);
 
     std::unique_ptr<Unit> unit{new Unit()};
 
-    FILE* fp = fopen(json_info, "rb");
-
-    if (fp == nullptr) {
-      syslog(LOG_ERR, "%s:%d fp is null", __func__, __LINE__);
-      return -EINVAL;
-    }
-
-    char readBuffer[65536];
-    FileReadStream is(fp, readBuffer, sizeof(readBuffer));
-
-    Document d;
-    d.ParseStream(is);
-
-    auto units = d["units"].GetArray();
+    auto units = json_object["units"].GetArray();
 
     for (auto const& unit_info : units) {
       unit->name_ = unit_info["name"].GetString();
@@ -68,14 +51,12 @@ int Database::Init(const char *json_info) {
 
     dbo::ptr<Unit> unit_ptr = session.add(std::move(unit));
   }
-
-  return 0;
 }
 
-dbo::ptr<Unit> Database::GetUnit() {
+dbo::ptr<Unit> Database::GetUnitByName(const char *name) {
   {
     dbo::Transaction transaction(session);
-    return session.find<Unit>().where("name = ?").bind("Mont Leonis");
+    return session.find<Unit>().where("name = ?").bind(name);
   }
 }
 

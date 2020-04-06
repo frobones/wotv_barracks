@@ -10,12 +10,17 @@
 #include <Wt/WPanel.h>
 #include <Wt/WText.h>
 
+#include <rapidjson/document.h>
+#include <rapidjson/filereadstream.h>
+
 #include "syslog.h"
 
 #include "database/dbo.hpp"
 #include "database/unit.hpp"
 #include "gui.hpp"
 #include "helper.hpp"
+
+using namespace rapidjson;
 
 /*
  * The env argument contains information about the new session, and
@@ -27,17 +32,32 @@ BarracksApplication::BarracksApplication(const WEnvironment& env, const char *js
   setlogmask(LOG_UPTO(LOG_NOTICE));
   openlog(__FILE__, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
 
-  Database db;
+  useStyleSheet(WLink("https://www.w3schools.com/w3css/4/w3.css"));
 
-  if (db.Init(json_file_path) != 0) {
-    syslog(LOG_ERR, "%s:%d Database failed to initialize\n", __func__, __LINE__);
+  // Open JSON file that contains the information to populate the Database
+  FILE* fp = fopen(json_file_path, "rb");
+  if (fp == nullptr) {
+    syslog(LOG_ERR, "%s:%d fp is null", __func__, __LINE__);
     return;
   }
 
-  dbo::ptr<Unit> unit = db.GetUnit();
+  // Read the file
+  char readBuffer[65536];
+  FileReadStream is(fp, readBuffer, sizeof(readBuffer));
 
-  useStyleSheet(WLink("https://www.w3schools.com/w3css/4/w3.css"));
+  // Parse the file
+  Document json_object;
+  json_object.ParseStream(is);
 
-  if (unit)
-    root()->addWidget(helper::get_unit_frame(unit.get()));
+  // Initialize Database with JSON data
+  Database db;
+  db.Init(json_object);
+
+  // Add units to Screen
+  for (auto &unit_info : json_object["units"].GetArray()) {
+    dbo::ptr<Unit> unit = db.GetUnitByName(unit_info["name"].GetString());
+
+    if (unit)
+      root()->addWidget(helper::get_unit_frame(unit.get()));
+  }
 }
