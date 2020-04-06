@@ -46,7 +46,6 @@ void Database::Init(Document &json_object) {
       unit->job_1_ = toEnum<Job>(unit_info["jobs"][0].GetString());
       unit->job_2_ = toEnum<Job>(unit_info["jobs"][1].GetString());
       unit->job_3_ = toEnum<Job>(unit_info["jobs"][2].GetString());
-      unit->image_uri = unit_info["image_uri"].GetString();
     }
 
     dbo::ptr<Unit> unit_ptr = session.add(std::move(unit));

@@ -8,6 +8,9 @@
 
 #include "unit.hpp"
 
+#define IMAGE_URI_ROOT "https://github.com/frobones/wotv_barracks/blob/master/assets/units/portraits/"
+#define IMAGE_EXT      ".jpg?raw=true"
+
 const char *Unit::GetName() const {
   return name_.c_str();
 }
@@ -150,6 +153,13 @@ const char *Unit::GetJob3() const {
   return GetJob(job_3_);
 }
 
-const char *Unit::GetImageUri() const {
-  return image_uri.c_str();
+std::string Unit::GetImageUri() const {
+  std::string temp = name_;
+  std::replace(temp.begin(), temp.end(), ' ', '_');
+
+  std::string uri = IMAGE_URI_ROOT;
+  uri += temp;
+  uri += IMAGE_EXT;
+
+  return uri;
 }

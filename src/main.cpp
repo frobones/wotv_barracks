@@ -24,7 +24,6 @@ const char* get_jsonfile(int argc, char **argv) {
   };
 
   while (true) {
-    fprintf(stderr, "OPTIND=%d\n", optind);
     const auto opt = getopt_long(argc, argv, "f:", long_options, nullptr);
 
     if (-1 == opt)

@@ -27,6 +27,7 @@ class Unit {
   Job job_1_;
   Job job_2_;
   Job job_3_;
+  std::string image_uri;
 
   const char *GetName() const;
   const char *GetFaction() const;
@@ -35,9 +36,7 @@ class Unit {
   const char *GetJob1() const;
   const char *GetJob2() const;
   const char *GetJob3() const;
-  const char *GetImageUri() const;
-
-  std::string image_uri;
+  std::string GetImageUri() const;
 
   template<class Action>
   void persist(Action &a) {
@@ -49,7 +48,6 @@ class Unit {
     dbo::field(a, job_1_, "job_1");
     dbo::field(a, job_2_, "job_2");
     dbo::field(a, job_3_, "job_3");
-    dbo::field(a, image_uri, "image");
   }
 
  private:
