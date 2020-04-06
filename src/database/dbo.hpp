@@ -19,7 +19,8 @@ namespace dbo = Wt::Dbo;
 class Database {
 public:
   Database();
-  void Init(const char*);
+  ~Database();
+  int Init(const char*);
 
   dbo::ptr<Unit> GetUnit();
 

@@ -20,7 +20,7 @@ using namespace Wt;
 
 class BarracksApplication : public WApplication {
 public:
-  BarracksApplication(const WEnvironment &env);
+  BarracksApplication(const WEnvironment &env, const char *json_file_info);
 };
 
 #endif // WOTV_BARRACKS_FRONTEND_GUI_HPP_

@@ -8,6 +8,7 @@
 
 #include <string>
 #include <cstdio>
+#include <syslog.h>
 
 #include <rapidjson/document.h>
 #include <rapidjson/filereadstream.h>
@@ -18,6 +19,9 @@
 using namespace rapidjson;
 
 Database::Database() {
+  setlogmask(LOG_UPTO(LOG_NOTICE));
+  openlog(__FILE__, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
+
   std::unique_ptr<dbo::backend::Sqlite3> sqlite3(new dbo::backend::Sqlite3(":memory:"));
 
   session.setConnection(std::move(sqlite3));
@@ -25,13 +29,23 @@ Database::Database() {
   session.createTables();
 }
 
-void Database::Init(const char *json_info) {
+Database::~Database() {
+  closelog();
+}
+
+int Database::Init(const char *json_info) {
   {
     dbo::Transaction transaction(session);
 
     std::unique_ptr<Unit> unit{new Unit()};
 
     FILE* fp = fopen(json_info, "rb");
+
+    if (fp == nullptr) {
+      syslog(LOG_ERR, "%s:%d fp is null", __func__, __LINE__);
+      return -EINVAL;
+    }
+
     char readBuffer[65536];
     FileReadStream is(fp, readBuffer, sizeof(readBuffer));
 
@@ -54,6 +68,8 @@ void Database::Init(const char *json_info) {
 
     dbo::ptr<Unit> unit_ptr = session.add(std::move(unit));
   }
+
+  return 0;
 }
 
 dbo::ptr<Unit> Database::GetUnit() {
@@ -62,3 +78,4 @@ dbo::ptr<Unit> Database::GetUnit() {
     return session.find<Unit>().where("name = ?").bind("Mont Leonis");
   }
 }
+
