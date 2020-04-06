@@ -11,6 +11,7 @@
 #include <Wt/WImage.h>
 #include <Wt/WLink.h>
 #include <Wt/WText.h>
+#include <Wt/WCssDecorationStyle.h>
 
 #include "helper.hpp"
 
@@ -25,17 +26,22 @@ std::unique_ptr<WPanel> helper::get_unit_frame(const Unit *unit) {
   container->addNew<WText>(WString("<p>Job 2: {1}</p>").arg(unit->GetJob2()));
   container->addNew<WText>(WString("<p>Job 3: {1}</p>").arg(unit->GetJob3()));
 
+  container->setMargin(WLength(10));
+
+  // Create panel
   auto panel = std::make_unique<WPanel>();
   panel->setTitle(unit->GetName());
   panel->addStyleClass("centered-example");
-  panel->setCollapsible(true);
 
-  Wt::WAnimation animation(Wt::AnimationEffect::SlideInFromTop,
-                           Wt::TimingFunction::EaseOut,
-                           100);
-
-  panel->setAnimation(animation);
+  // Place Container in panel
   panel->setCentralWidget(std::move(container));
+
+  // Style the panel
+  WCssDecorationStyle style;
+  style.setBorder(WBorder(BorderStyle::Double, BorderWidth::Medium, WColor(StandardColor::Black)));
+  style.setBackgroundColor(WColor(StandardColor::Gray));
+  panel->setDecorationStyle(style);
+  panel->setFloatSide(Side::Left);
 
   return panel;
 }
