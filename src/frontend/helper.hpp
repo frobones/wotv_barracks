@@ -17,7 +17,7 @@ using namespace Wt;
 
 class helper {
 public:
-  static std::unique_ptr<WContainerWidget> get_unit_frame(const Unit *unit);
+  static std::unique_ptr<WPanel> get_unit_frame(const Unit *unit);
 };
 
 #endif // WOTV_BARRACKS_FRONTEND_HELPER_HPP_
