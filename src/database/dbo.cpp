@@ -33,11 +33,11 @@ void Database::Init(Document &json_object) {
   {
     dbo::Transaction transaction(session);
 
-    std::unique_ptr<Unit> unit{new Unit()};
-
     auto units = json_object["units"].GetArray();
 
     for (auto const& unit_info : units) {
+      std::unique_ptr<Unit> unit = std::make_unique<Unit>();
+
       unit->name_ = unit_info["name"].GetString();
       unit->faction_ = toEnum<Faction>(unit_info["faction"].GetString());
       unit->is_limited_ = unit_info["is_limited"].GetBool();
@@ -46,9 +46,10 @@ void Database::Init(Document &json_object) {
       unit->job_1_ = toEnum<Job>(unit_info["jobs"][0].GetString());
       unit->job_2_ = toEnum<Job>(unit_info["jobs"][1].GetString());
       unit->job_3_ = toEnum<Job>(unit_info["jobs"][2].GetString());
+
+      session.add(std::move(unit));
     }
 
-    dbo::ptr<Unit> unit_ptr = session.add(std::move(unit));
   }
 }
 

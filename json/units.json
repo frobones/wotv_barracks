@@ -7,6 +7,22 @@
       "rarity": "MR",
       "element": "Earth",
       "jobs": ["Lord", "Paladin", "Knight"]
+    },
+    {
+      "name": "Ayaka",
+      "faction": "FFBE",
+      "is_limited": false,
+      "rarity": "UR",
+      "element": "Wind",
+      "jobs": ["White Mage", "Time Mage", "Green Mage"]
+    },
+    {
+      "name": "Mediena",
+      "faction": "FFBE",
+      "is_limited": false,
+      "rarity": "UR",
+      "element": "Ice",
+      "jobs": ["Black Mage", "Green Mage", "Ninja"]
     }
   ]
 }
